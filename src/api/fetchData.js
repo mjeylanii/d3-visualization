@@ -41,6 +41,25 @@ async function fetchData(args) {
         Data: { counties, education },
         Response: "choropleth-map",
       };
+    case "kickstarter-pledges":
+      var response = await fetch(
+        "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/kickstarter-funding-data.json"
+      );
+      var data = await response.json();
+      return { Data: data, Response: "tree-map" };
+    case "movie-sales":
+      var response = await fetch(
+        "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/movie-data.json"
+      );
+      var data = await response.json();
+      return { Data: data, Response: "tree-map" };
+
+    case "video-game-sales":
+      var response = await fetch(
+        "https://cdn.freecodecamp.org/testable-projects-fcc/data/tree_map/video-game-sales-data.json"
+      );
+      var data = await response.json();
+      return { Data: data, Response: "tree-map" };
     default:
       return { Data: null, Response: null };
   }

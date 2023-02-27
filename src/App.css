@@ -133,6 +133,36 @@ rect:hover {
   }
 }
 
+#data-selection-header {
+  display: flex;
+  flex-direction: column;
+  height: 2vh;
+  margin-bottom: 1rem;
+}
+
+.dataset-radios {
+  font-size: 0.8rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.tile {
+
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  stroke: #fff;
+  stroke-width: 1px;
+  transition: all 0.2s ease-in-out;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+}
 
 
 /* Loading animation with dots in loading class */

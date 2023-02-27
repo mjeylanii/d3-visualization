@@ -9,13 +9,14 @@ import ChoroplethMap from "./components/ChoroplethMap";
 import NavBar from "./components/Layout/NavBar";
 import NotSupported from "./components/NotSupported";
 import TreeMap from "./components/TreeMap";
+import DataSelection from "./components/DataSelection";
 
 function App() {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedChart, setSelectedChart] = useState("choropleth-map");
-  const chartContainer = document.querySelector(".chart-container");
+  const [selectedChart, setSelectedChart] = useState("tree-map");
+  const [selectedData, setSelectedData] = useState("kickstarter-pledges");
 
   useEffect(() => {
     const getData = async () => {
@@ -53,7 +54,7 @@ function App() {
           }, 1000);
           break;
         case "tree-map":
-          var response = await fetchData("tree-map");
+          var response = await fetchData(selectedData);
           var data = response;
           setData(data);
           setTimeout(() => {
@@ -72,7 +73,7 @@ function App() {
       }
     };
     getData();
-  }, [selectedChart, loading]);
+  }, [selectedChart, selectedData, loading]);
 
   return (
     <div>
@@ -83,11 +84,21 @@ function App() {
         loading={loading}
         setLoading={setLoading}
       />
+
       <article>
         <div className="not-supported">
           <NotSupported />
         </div>
         <div className="chart-container">
+          {selectedChart === "tree-map" ? (
+            <header id="data-selection-header">
+              {" "}
+              <DataSelection
+                setSelectedData={setSelectedData}
+                setLoading={setLoading}
+              />{" "}
+            </header>
+          ) : null}
           {loading ? (
             <div className="loading">
               {/* Loop for dots after "Loading" string */}
@@ -104,7 +115,7 @@ function App() {
               ) : selectedChart === "choropleth-map" ? (
                 <ChoroplethMap fetchedData={data} />
               ) : selectedChart === "tree-map" ? (
-                <TreeMap fetchData={data} />
+                <TreeMap selectedData={selectedData} fetchedData={data} />
               ) : (
                 <BarChart fetchedData={data} />
               )}

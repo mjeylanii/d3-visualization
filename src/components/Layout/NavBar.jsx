@@ -8,7 +8,7 @@ export default function NavBar({
 }) {
   const chartSwitch = (e) => {
     if (loading === false) setLoading(true);
-    switch (e.target.innerText) {
+    switch (e.target.value) {
       case "Bar Chart":
         setSelectedChart("bar-chart");
         break;
@@ -34,6 +34,7 @@ export default function NavBar({
       <ul>
         <li>
           <button
+            value={"Bar Chart"}
             className={selectedChart === "bar-chart" ? "btn-active" : ""}
             role="button"
             onClick={chartSwitch}
@@ -43,6 +44,7 @@ export default function NavBar({
         </li>
         <li>
           <button
+            value={"Scatter Plot"}
             className={selectedChart === "scatter-plot" ? "btn-active" : ""}
             role="button"
             onClick={chartSwitch}
@@ -52,6 +54,7 @@ export default function NavBar({
         </li>
         <li>
           <button
+            value={"Heat Map"}
             className={selectedChart === "heat-map" ? "btn-active" : ""}
             role="button"
             onClick={chartSwitch}
@@ -61,6 +64,7 @@ export default function NavBar({
         </li>
         <li>
           <button
+            value={"Choropleth Map"}
             className={selectedChart === "choropleth-map" ? "btn-active" : ""}
             role="button"
             onClick={chartSwitch}
@@ -70,6 +74,7 @@ export default function NavBar({
         </li>
         <li>
           <button
+            value={"Tree Map"}
             className={selectedChart === "tree-map" ? "btn-active" : ""}
             role="button"
             onClick={chartSwitch}
