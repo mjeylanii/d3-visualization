@@ -14,61 +14,50 @@ export default function ScatterPlot({ fetchedData }) {
     if (loading === false) {
       const svg = d3.select(svgRef.current);
       const tooltip = d3.select("#tooltip");
-      const parseTime = d3.timeParse("%M:%S");
       const minDate = d3.min(Object.values(data).map((d) => d["Year"])) - 1;
       const maxDate = d3.max(Object.values(data).map((d) => d["Year"]));
       const maxTime = d3.max(Object.values(data).map((d) => d["Time"]));
       const minTime = d3.min(Object.values(data).map((d) => d["Time"]));
 
       const xScale = d3
-        .scaleLinear()
+        .scaleTime()
         .domain([minDate, maxDate])
         .range([padding, width - padding]);
 
+      // const yScale = d3
+      //   .scaleTime()
+      //   .domain([
+      //     d3.timeSecond.offset(parseTime(minTime), -6),
+      //     parseTime(maxTime),
+      //   ])
+      //   .range([height - padding, padding]);
+      // const yScale = d3
+      //   .scaleTime()
+      //   .domain([
+      //     d3.min(data, (d) => new Date(d.Time)),
+      //     d3.max(data, (d) => new Date(d.Time)),
+      //   ])
+      //   .range([height - padding, padding]);
+      // const yScale = d3
+      //   .scaleTime()
+      //   .domain(
+      //     d3.extent(
+      //       data.map((d) => {
+      //         const date = new Date();
+      //         const timeArr = d["Time"].split(":");
+      //         date.setMinutes(parseInt(timeArr[0]), parseInt(timeArr[1]));
+      //         return date;
+      //       })
+      //     )
+      //   )
+      //   .range([yScale(new Date("2022-01-01T00:36:00")), padding]);
       const yScale = d3
         .scaleTime()
         .domain([
-          d3.timeSecond.offset(parseTime(minTime), -6),
-          parseTime(maxTime),
+          new Date("2022-01-01T00:36:00"),
+          new Date("2022-01-01T00:40:00"),
         ])
         .range([height - padding, padding]);
-
-      const xAxis = d3
-        .axisBottom(xScale)
-        .tickFormat(d3.format("d"))
-        .ticks(12)
-        .tickSize(1)
-        .tickSizeInner(10)
-        .tickSizeOuter(1)
-        .tickPadding(10);
-
-      const yAxis = d3
-        .axisLeft(yScale)
-        .tickFormat(d3.timeFormat("%M:%S"))
-        .tickSize(1)
-        .tickSizeInner(10)
-        .tickSizeOuter(1);
-
-      svg
-        .append("g")
-        .attr("transform", `translate(0, ${height - padding} )`)
-        .attr("fill", "black")
-        .attr("id", "x-axis")
-        .call(xAxis)
-        .selectAll("text")
-        .attr("font-size", "0.6rem")
-        .attr("fill", "black");
-
-      //Set interval to 1 minute
-      svg
-        .append("g")
-        .attr("transform", `translate(${padding}, 0)`)
-        .attr("fill", "black")
-        .attr("id", "y-axis")
-        .call(yAxis)
-        .selectAll("text")
-        .attr("font-size", "0.6rem")
-        .attr("fill", "black");
 
       svg
         .selectAll("circle")
@@ -78,10 +67,12 @@ export default function ScatterPlot({ fetchedData }) {
         .attr("class", "dot")
         .attr("data-xvalue", (d) => d["Year"])
         .attr("data-yvalue", (d) => {
-          return d["Time"];
+          return new Date(`2022-01-01T00:${d["Time"]}`);
         })
         .attr("cx", (d) => xScale(d["Year"]))
-        .attr("cy", (d) => yScale(parseTime(d["Time"])))
+        .attr("cy", (d) => {
+          return yScale(new Date(`2022-01-01T00:${d["Time"]}`));
+        })
         .attr("r", 0)
         .transition()
         .duration(1000)
@@ -98,11 +89,12 @@ export default function ScatterPlot({ fetchedData }) {
         .on("end", function (e, d) {
           d3.select(this)
             .on("mouseover", (e, d) => {
+              var date = new Date(`2022-01-01T00:${d["Time"]}`);
               tooltip
                 .style("visibility", "visible")
                 .style("opacity", 1)
                 .attr("data-yvalue", (d) => {
-                  var yvalue = new Date(d["Time"]).getMinutes();
+                  return yScale(date);
                 })
                 .attr("data-year", d["Year"])
                 .style("left", e.pageX + 20 + "px")
@@ -147,6 +139,44 @@ export default function ScatterPlot({ fetchedData }) {
         .text("Year")
         .attr("font-size", "1rem");
 
+      const xAxis = d3
+        .axisBottom(xScale)
+        .tickFormat(d3.format("d"))
+        .ticks(12)
+        .tickSize(1)
+        .tickSizeInner(10)
+        .tickSizeOuter(1)
+        .tickPadding(10);
+
+      const yAxis = d3
+        .axisLeft(yScale)
+        .tickFormat(d3.timeFormat("%M:%S"))
+        .ticks(12)
+        .tickSize(1)
+        .tickSizeInner(10)
+        .tickSizeOuter(1)
+        .tickPadding(10);
+
+      svg
+        .append("g")
+        .attr("transform", `translate(0, ${height - padding} )`)
+        .attr("fill", "black")
+        .attr("id", "x-axis")
+        .call(xAxis)
+        .selectAll("text")
+        .attr("font-size", "0.6rem")
+        .attr("fill", "black");
+
+      //Set interval to 1 minute
+      svg
+        .append("g")
+        .attr("transform", `translate(${padding}, 0)`)
+        .attr("fill", "black")
+        .attr("id", "y-axis")
+        .call(yAxis)
+        .selectAll("text")
+        .attr("font-size", "0.6rem")
+        .attr("fill", "black");
       //Legend
       const legend = svg
         .append("g")

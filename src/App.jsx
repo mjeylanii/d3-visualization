@@ -15,7 +15,7 @@ function App() {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedChart, setSelectedChart] = useState("tree-map");
+  const [selectedChart, setSelectedChart] = useState("scatter-plot");
   const [selectedData, setSelectedData] = useState("kickstarter-pledges");
 
   useEffect(() => {
