@@ -82,6 +82,10 @@ const BarChart = ({ fetchedData }) => {
               //Remove tooltip
               tooltip.style("visibility", "hidden");
               tooltip.style("opacity", 0);
+              tooltip
+                .style("left", 0)
+                .attr("data-date", null)
+                .attr("data-gdp", null);
               d3.select(this).attr("opacity", 1);
             });
         })

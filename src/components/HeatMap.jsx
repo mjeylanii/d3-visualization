@@ -148,7 +148,10 @@ export default function HeatMap({ fetchedData }) {
             })
             .on("mouseout", (e, d) => {
               const tooltip = d3.select("#tooltip");
-              tooltip.style("opacity", 0);
+              tooltip
+                .style("opacity", 0)
+                .style("visibility", "hidden")
+                .attr("data-year", null);
             });
         });
 

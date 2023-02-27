@@ -110,7 +110,8 @@ export default function ChoroplethMap({ fetchedData }) {
           d3.select(this)
             .on("mouseover", (e, d) => {
               tooltip
-                .style("opacity", 0.9)
+                .style("opacity", 1)
+                .style("visibility", "visible")
                 .attr("data-education", () => {
                   const result = educationData.filter(
                     (obj) => obj.fips === d.id
@@ -127,7 +128,7 @@ export default function ChoroplethMap({ fetchedData }) {
                 .style("top", e.pageY - 28 + "px");
             })
             .on("mouseout", () => {
-              tooltip.style("opacity", 0);
+              tooltip.style("opacity", 0).style("visibility", "hidden");
             });
         });
 

@@ -91,7 +91,10 @@ export default function TreeMap({ fetchedData, selectedData }) {
           d3.select(this)
             .on("mouseover", (e, d) => {
               tooltip
-                .style("opacity", 0.9)
+                .style("visibility", "visible")
+                .style("opacity", 1)
+                .style("width", "fit-content")
+                .style("height", "fit-content")
                 .attr("data-value", d.data.value)
                 .html(
                   `Name: ${d.data.name}<br>Category: ${
@@ -102,7 +105,11 @@ export default function TreeMap({ fetchedData, selectedData }) {
                 .style("top", e.pageY - 28 + "px");
             })
             .on("mouseout", (d) => {
-              tooltip.style("opacity", 0).attr("data-value", null).html("");
+              tooltip
+                .style("opacity", 0)
+                .style("visibility", "hidden")
+                .attr("data-value", null)
+                .html("");
             });
         });
 

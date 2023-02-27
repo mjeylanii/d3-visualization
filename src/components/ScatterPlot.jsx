@@ -33,7 +33,6 @@ export default function ScatterPlot({ fetchedData }) {
         ])
         .range([height - padding, padding]);
 
-      //Make xAxis start from 0 then 1994
       const xAxis = d3
         .axisBottom(xScale)
         .tickFormat(d3.format("d"))
@@ -48,8 +47,7 @@ export default function ScatterPlot({ fetchedData }) {
         .tickFormat(d3.timeFormat("%M:%S"))
         .tickSize(1)
         .tickSizeInner(10)
-        .tickSizeOuter(1)
-        .tickValues(yScale.ticks().filter((d) => +d !== 0));
+        .tickSizeOuter(1);
 
       svg
         .append("g")
@@ -79,14 +77,16 @@ export default function ScatterPlot({ fetchedData }) {
         .append("circle")
         .attr("class", "dot")
         .attr("data-xvalue", (d) => d["Year"])
-        .attr("data-yvalue", (d) => parseTime(d["Time"]))
+        .attr("data-yvalue", (d) => {
+          return d["Time"];
+        })
         .attr("cx", (d) => xScale(d["Year"]))
         .attr("cy", (d) => yScale(parseTime(d["Time"])))
         .attr("r", 0)
         .transition()
         .duration(1000)
         .delay((d, i) => i * 10)
-        .ease(d3.easeElasticInOut)
+        .ease(d3.easeLinear)
         .attr("r", 8)
         .attr("fill", (d) => {
           if (d["Doping"] === "") {
@@ -95,12 +95,15 @@ export default function ScatterPlot({ fetchedData }) {
             return "red";
           }
         })
-        .on("end", function (d) {
+        .on("end", function (e, d) {
           d3.select(this)
             .on("mouseover", (e, d) => {
               tooltip
                 .style("visibility", "visible")
                 .style("opacity", 1)
+                .attr("data-yvalue", (d) => {
+                  var yvalue = new Date(d["Time"]).getMinutes();
+                })
                 .attr("data-year", d["Year"])
                 .style("left", e.pageX + 20 + "px")
                 .style("top", e.pageY - 28 + "px")
@@ -115,12 +118,14 @@ export default function ScatterPlot({ fetchedData }) {
                     d["Time"] +
                     "<br/>" +
                     d["Doping"]
-                )
-                .attr("data-year", (d) => d["Year"])
-                .attr("data-yvalue", (d) => parseTime(d["Time"]));
+                );
             })
             .on("mouseout", (e, d) => {
-              tooltip.style("visibility", "hidden").style("opacity", 0);
+              tooltip
+                .style("visibility", "hidden")
+                .style("opacity", 0)
+                .attr("data-year", null)
+                .attr("data-yvalue", null);
             });
         });
       svg
